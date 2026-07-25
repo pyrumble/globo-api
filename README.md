@@ -1,2 +1,2 @@
 # globo-api
-API for globeador
+Yeah no docs lol

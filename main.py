@@ -109,7 +109,7 @@ def gifs(auth: str | None = Header(default=None, alias="password")):
         return HTMLResponse(status_code=401)
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
-    cur.execute("SELECT id, gif_name, gif_url, user_id FROM globos",)
+    cur.execute("SELECT id, gif_name, gif_url, user_id, uploaded_at FROM globos",)
     res = cur.fetchall()
     conn.close()
 

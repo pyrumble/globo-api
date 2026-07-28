@@ -81,6 +81,7 @@ def delete_gif(gif_id: int, auth: str | None = Header(default=None, alias="passw
     os.remove(f"storage/gifs/{gif_id}.{ext}")
 
     cur.execute("DELETE FROM globos WHERE id=?", (gif_id,))
+    conn.commit()
     conn.close()
 
 

@@ -4,6 +4,7 @@ import shutil
 import time
 import sqlite3
 import json
+import os
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
@@ -65,6 +66,23 @@ def upload(user_id: int = Form(), gif_name: str =  Form(), file: UploadFile = Fi
     conn.close()
 
     return {"id": gif_id, "url": url}
+
+@app.delete("/gif/{gif_id}")
+def delete_gif(gif_id: int, auth: str | None = Header(default=None, alias="password")):
+    if auth != AUTH:
+        return HTMLResponse(status_code=401)
+    conn = sqlite3.connect("database.db")
+    cur = conn.cursor()
+    cur.execute("SELECT ext FROM globos WHERE id=?", (gif_id,))
+    res = cur.fetchone()
+    if not res: 
+        return HTMLResponse(status_code=404)
+    ext = res[0]
+    os.remove(f"storage/gifs/{gif_id}.{ext}")
+
+    cur.execute("DELETE FROM globos WHERE id=?", (gif_id,))
+    conn.close()
+
 
 @app.get("/gif/{gif_id}")
 def gif(gif_id: int):

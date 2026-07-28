@@ -78,10 +78,9 @@ def delete_gif(gif_id: int, auth: str | None = Header(default=None, alias="passw
     if not res: 
         return HTMLResponse(status_code=404)
     ext = res[0]
-    os.remove(f"storage/gifs/{gif_id}.{ext}")
-
     cur.execute("DELETE FROM globos WHERE id=?", (gif_id,))
     conn.commit()
+    os.remove(f"storage/gifs/{gif_id}.{ext}")
     conn.close()
 
 
@@ -113,7 +112,7 @@ def mygifs(user_id: int, auth: str | None = Header(default=None, alias="password
         return HTMLResponse(status_code=401)
     conn = sqlite3.connect("database.db")
     cur = conn.cursor()
-    cur.execute("SELECT id, gif_name, gif_url FROM globos WHERE user_id=?", (user_id,))
+    cur.execute("SELECT id, gif_name, gif_url, uploaded_at FROM globos WHERE user_id=?", (user_id,))
     res = cur.fetchall()
     conn.close()
 
